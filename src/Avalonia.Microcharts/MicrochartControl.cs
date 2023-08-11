@@ -30,7 +30,7 @@ namespace Avalonia.Microcharts
 
         private void ChartChanged(Chart chart)
         {
-            this.InvalidateVisual();
+            InvalidateVisual();
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -38,8 +38,8 @@ namespace Avalonia.Microcharts
 
         public override void Render(DrawingContext context)
         {
-            this.custom.Bounds = this.Bounds;
-            this.custom.Chart = this.chart;
+            custom.Bounds = Bounds;
+            custom.Chart = chart;
 
             context.Custom(custom);
         }
@@ -49,7 +49,7 @@ namespace Avalonia.Microcharts
             public Chart Chart { get; set; }
             public void Dispose() { }
             public bool HitTest(Point p) => false;
-            public bool Equals(ICustomDrawOperation other) => this.Equals(other);
+            public bool Equals(ICustomDrawOperation other) => Equals(other);
 
             public Rect Bounds { get; set; }
 

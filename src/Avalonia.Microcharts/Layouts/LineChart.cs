@@ -7,7 +7,7 @@ namespace Avalonia.Microcharts
     {
         public LineChart()
         {
-            this.PointSize = 10;
+            PointSize = 10;
         }
 
         /// <summary>
@@ -35,28 +35,28 @@ namespace Avalonia.Microcharts
             var headerHeight = CalculateHeaderHeight(valueLabelSizes);
             var itemSize = CalculateItemSize(width, height, footerHeight, headerHeight);
             var origin = CalculateYOrigin(itemSize.Height, headerHeight);
-            var points = this.CalculatePoints(itemSize, origin, headerHeight);
+            var points = CalculatePoints(itemSize, origin, headerHeight);
 
-            this.DrawArea(canvas, points, itemSize, origin);
-            this.DrawLine(canvas, points, itemSize);
-            this.DrawPoints(canvas, points);
-            this.DrawFooter(canvas, points, itemSize, height, footerHeight);
-            this.DrawValueLabel(canvas, points, itemSize, height, valueLabelSizes);
+            DrawArea(canvas, points, itemSize, origin);
+            DrawLine(canvas, points, itemSize);
+            DrawPoints(canvas, points);
+            DrawFooter(canvas, points, itemSize, height, footerHeight);
+            DrawValueLabel(canvas, points, itemSize, height, valueLabelSizes);
         }
 
         protected void DrawLine(SKCanvas canvas, SKPoint[] points, SKSize itemSize)
         {
-            if (points.Length > 1 && this.LineMode != LineMode.None)
+            if (points.Length > 1 && LineMode != LineMode.None)
             {
                 using (var paint = new SKPaint
                 {
                     Style = SKPaintStyle.Stroke,
                     Color = SKColors.White,
-                    StrokeWidth = this.LineSize,
+                    StrokeWidth = LineSize,
                     IsAntialias = true,
                 })
                 {
-                    using (var shader = this.CreateGradient(points))
+                    using (var shader = CreateGradient(points))
                     {
                         paint.Shader = shader;
 
@@ -64,17 +64,17 @@ namespace Avalonia.Microcharts
 
                         path.MoveTo(points.First());
 
-                        var last = (this.LineMode == LineMode.Spline) ? points.Length - 1 : points.Length;
+                        var last = (LineMode == LineMode.Spline) ? points.Length - 1 : points.Length;
                         for (int i = 0; i < last; i++)
                         {
-                            if (this.LineMode == LineMode.Spline)
+                            if (LineMode == LineMode.Spline)
                             {
-                                var entry = this.Entries.ElementAt(i);
-                                var nextEntry = this.Entries.ElementAt(i + 1);
-                                var cubicInfo = this.CalculateCubicInfo(points, i, itemSize);
+                                var entry = Entries.ElementAt(i);
+                                var nextEntry = Entries.ElementAt(i + 1);
+                                var cubicInfo = CalculateCubicInfo(points, i, itemSize);
                                 path.CubicTo(cubicInfo.control, cubicInfo.nextControl, cubicInfo.nextPoint);
                             }
-                            else if (this.LineMode == LineMode.Straight)
+                            else if (LineMode == LineMode.Straight)
                             {
                                 path.LineTo(points[i]);
                             }
@@ -88,7 +88,7 @@ namespace Avalonia.Microcharts
 
         protected void DrawArea(SKCanvas canvas, SKPoint[] points, SKSize itemSize, float origin)
         {
-            if (this.LineAreaAlpha > 0 && points.Length > 1)
+            if (LineAreaAlpha > 0 && points.Length > 1)
             {
                 using (var paint = new SKPaint
                 {
@@ -97,7 +97,7 @@ namespace Avalonia.Microcharts
                     IsAntialias = true,
                 })
                 {
-                    using (var shader = this.CreateGradient(points, this.LineAreaAlpha))
+                    using (var shader = CreateGradient(points, LineAreaAlpha))
                     {
                         paint.Shader = shader;
 
@@ -106,17 +106,17 @@ namespace Avalonia.Microcharts
                         path.MoveTo(points.First().X, origin);
                         path.LineTo(points.First());
 
-                        var last = (this.LineMode == LineMode.Spline) ? points.Length - 1 : points.Length;
+                        var last = (LineMode == LineMode.Spline) ? points.Length - 1 : points.Length;
                         for (int i = 0; i < last; i++)
                         {
-                            if (this.LineMode == LineMode.Spline)
+                            if (LineMode == LineMode.Spline)
                             {
-                                var entry = this.Entries.ElementAt(i);
-                                var nextEntry = this.Entries.ElementAt(i + 1);
-                                var cubicInfo = this.CalculateCubicInfo(points, i, itemSize);
+                                var entry = Entries.ElementAt(i);
+                                var nextEntry = Entries.ElementAt(i + 1);
+                                var cubicInfo = CalculateCubicInfo(points, i, itemSize);
                                 path.CubicTo(cubicInfo.control, cubicInfo.nextControl, cubicInfo.nextPoint);
                             }
-                            else if (this.LineMode == LineMode.Straight)
+                            else if (LineMode == LineMode.Straight)
                             {
                                 path.LineTo(points[i]);
                             }
@@ -151,7 +151,7 @@ namespace Avalonia.Microcharts
             return SKShader.CreateLinearGradient(
                 new SKPoint(startX, 0),
                 new SKPoint(endX, 0),
-                this.Entries.Select(x => x.Color.WithAlpha(alpha)).ToArray(),
+                Entries.Select(x => x.Color.WithAlpha(alpha)).ToArray(),
                 null,
                 SKShaderTileMode.Clamp);
         }

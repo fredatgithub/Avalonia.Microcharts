@@ -3,12 +3,12 @@ using Avalonia.Markup.Xaml;
 
 namespace Avalonia.Microcharts.Example
 {
-    public class MainWindow : Window
+  public class MainWindow : Window
+  {
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            AvaloniaXamlLoader.Load(this);
-            this.DataContext = new MainWindowViewModel();
-        }
+      AvaloniaXamlLoader.Load(this);
+      DataContext = new MainWindowViewModel();
     }
+  }
 }

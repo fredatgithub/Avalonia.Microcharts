@@ -40,20 +40,20 @@ namespace Avalonia.Microcharts
         {
             get
             {
-                if (!this.Entries.Any())
+                if (!Entries.Any())
                 {
                     return 0;
                 }
 
-                if (this.InternalMinValue == null)
+                if (InternalMinValue == null)
                 {
-                    return Math.Min(0, this.Entries.Min(x => x.Value));
+                    return Math.Min(0, Entries.Min(x => x.Value));
                 }
 
-                return Math.Min(this.InternalMinValue.Value, this.Entries.Min(x => x.Value));
+                return Math.Min(InternalMinValue.Value, Entries.Min(x => x.Value));
             }
 
-            set => this.InternalMinValue = value;
+            set => InternalMinValue = value;
         }
 
         /// <summary>
@@ -65,20 +65,20 @@ namespace Avalonia.Microcharts
         {
             get
             {
-                if (!this.Entries.Any())
+                if (!Entries.Any())
                 {
                     return 0;
                 }
 
-                if (this.InternalMaxValue == null)
+                if (InternalMaxValue == null)
                 {
-                   return Math.Max(0, this.Entries.Max(x => x.Value));
+                   return Math.Max(0, Entries.Max(x => x.Value));
                 }
 
-                return Math.Max(this.InternalMaxValue.Value, this.Entries.Max(x => x.Value));
+                return Math.Max(InternalMaxValue.Value, Entries.Max(x => x.Value));
             }
 
-            set => this.InternalMaxValue = value;
+            set => InternalMaxValue = value;
         }
 
         /// <summary>
@@ -101,9 +101,9 @@ namespace Avalonia.Microcharts
         /// <param name="height">The height.</param>
         public void Draw(SKCanvas canvas, int width, int height)
         {
-            canvas.Clear(this.BackgroundColor);
+            canvas.Clear(BackgroundColor);
 
-            this.DrawContent(canvas, width, height);
+            DrawContent(canvas, width, height);
         }
 
         /// <summary>
@@ -124,10 +124,10 @@ namespace Avalonia.Microcharts
         /// <param name="isLeft">If set to <c>true</c> is left.</param>
         protected void DrawCaptionElements(SKCanvas canvas, int width, int height, List<Entry> entries, bool isLeft)
         {
-            var margin = 2 * this.Margin;
+            var margin = 2 * Margin;
             var availableHeight = height - (2 * margin);
-            var x = isLeft ? this.Margin : (width - this.Margin - this.LabelTextSize);
-            var ySpace = (availableHeight - this.LabelTextSize) / ((entries.Count <= 1) ? 1 : entries.Count - 1);
+            var x = isLeft ? Margin : (width - Margin - LabelTextSize);
+            var ySpace = (availableHeight - LabelTextSize) / ((entries.Count <= 1) ? 1 : entries.Count - 1);
 
             for (int i = 0; i < entries.Count; i++)
             {
@@ -135,7 +135,7 @@ namespace Avalonia.Microcharts
                 var y = margin + (i * ySpace);
                 if (entries.Count <= 1)
                 {
-                    y += (availableHeight - this.LabelTextSize) / 2;
+                    y += (availableHeight - LabelTextSize) / 2;
                 }
 
                 var hasLabel = !string.IsNullOrEmpty(entry.Label);
@@ -144,9 +144,9 @@ namespace Avalonia.Microcharts
                 if (hasLabel || hasValueLabel)
                 {
                     var hasOffset = hasLabel && hasValueLabel;
-                    var captionMargin = this.LabelTextSize * 0.60f;
+                    var captionMargin = LabelTextSize * 0.60f;
                     var space = hasOffset ? captionMargin : 0;
-                    var captionX = isLeft ? this.Margin : width - this.Margin - this.LabelTextSize;
+                    var captionX = isLeft ? Margin : width - Margin - LabelTextSize;
 
                     using (var paint = new SKPaint
                     {
@@ -154,20 +154,20 @@ namespace Avalonia.Microcharts
                         Color = entry.Color,
                     })
                     {
-                        var rect = SKRect.Create(captionX, y, this.LabelTextSize, this.LabelTextSize);
+                        var rect = SKRect.Create(captionX, y, LabelTextSize, LabelTextSize);
                         canvas.DrawRect(rect, paint);
                     }
 
                     if (isLeft)
                     {
-                        captionX += this.LabelTextSize + captionMargin;
+                        captionX += LabelTextSize + captionMargin;
                     }
                     else
                     {
                         captionX -= captionMargin;
                     }
 
-                    canvas.DrawCaptionLabels(entry.Label, entry.TextColor, entry.ValueLabel, entry.Color, this.LabelTextSize, new SKPoint(captionX, y + (this.LabelTextSize / 2)), isLeft ? SKTextAlign.Left : SKTextAlign.Right);
+                    canvas.DrawCaptionLabels(entry.Label, entry.TextColor, entry.ValueLabel, entry.Color, LabelTextSize, new SKPoint(captionX, y + (LabelTextSize / 2)), isLeft ? SKTextAlign.Left : SKTextAlign.Right);
                 }
             }
         }

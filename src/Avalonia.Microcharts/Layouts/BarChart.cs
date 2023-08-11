@@ -8,7 +8,7 @@ namespace Avalonia.Microcharts
     {
         public BarChart()
         {
-            this.PointSize = 0;
+            PointSize = 0;
         }
 
         /// <summary>
@@ -30,13 +30,13 @@ namespace Avalonia.Microcharts
             var headerHeight = CalculateHeaderHeight(valueLabelSizes);
             var itemSize = CalculateItemSize(width, height, footerHeight, headerHeight);
             var origin = CalculateYOrigin(itemSize.Height, headerHeight);
-            var points = this.CalculatePoints(itemSize, origin, headerHeight);
+            var points = CalculatePoints(itemSize, origin, headerHeight);
 
-            this.DrawBarAreas(canvas, points, itemSize, headerHeight);
-            this.DrawBars(canvas, points, itemSize, origin, headerHeight);
-            this.DrawPoints(canvas, points);
-            this.DrawFooter(canvas, points, itemSize, height, footerHeight);
-            this.DrawValueLabel(canvas, points, itemSize, height, valueLabelSizes);
+            DrawBarAreas(canvas, points, itemSize, headerHeight);
+            DrawBars(canvas, points, itemSize, origin, headerHeight);
+            DrawPoints(canvas, points);
+            DrawFooter(canvas, points, itemSize, height, footerHeight);
+            DrawValueLabel(canvas, points, itemSize, height, valueLabelSizes);
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace Avalonia.Microcharts
             const float MinBarHeight = 4;
             if (points.Length > 0)
             {
-                for (int i = 0; i < this.Entries.Count(); i++)
+                for (int i = 0; i < Entries.Count(); i++)
                 {
-                    var entry = this.Entries.ElementAt(i);
+                    var entry = Entries.ElementAt(i);
                     var point = points[i];
 
                     using (var paint = new SKPaint
@@ -69,7 +69,7 @@ namespace Avalonia.Microcharts
                         if (height < MinBarHeight)
                         {
                             height = MinBarHeight;
-                            if (y + height > this.Margin + itemSize.Height)
+                            if (y + height > Margin + itemSize.Height)
                             {
                                 y = headerHeight + itemSize.Height - height;
                             }
@@ -91,17 +91,17 @@ namespace Avalonia.Microcharts
         /// <param name="headerHeight">The header height.</param>
         protected void DrawBarAreas(SKCanvas canvas, SKPoint[] points, SKSize itemSize, float headerHeight)
         {
-            if (points.Length > 0 && this.PointAreaAlpha > 0)
+            if (points.Length > 0 && PointAreaAlpha > 0)
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    var entry = this.Entries.ElementAt(i);
+                    var entry = Entries.ElementAt(i);
                     var point = points[i];
 
                     using (var paint = new SKPaint
                     {
                         Style = SKPaintStyle.Fill,
-                        Color = entry.Color.WithAlpha(this.BarAreaAlpha),
+                        Color = entry.Color.WithAlpha(BarAreaAlpha),
                     })
                     {
                         var max = entry.Value > 0 ? headerHeight : headerHeight + itemSize.Height;

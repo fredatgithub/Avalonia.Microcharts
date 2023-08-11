@@ -13,43 +13,43 @@ namespace Avalonia.Microcharts
 
         public byte PointAreaAlpha { get; set; } = 100;
 
-        private float ValueRange => this.MaxValue - this.MinValue;
+        private float ValueRange => MaxValue - MinValue;
 
         public float CalculateYOrigin(float itemHeight, float headerHeight)
         {
-            if (this.MaxValue <= 0)
+            if (MaxValue <= 0)
             {
                 return headerHeight;
             }
 
-            if (this.MinValue > 0)
+            if (MinValue > 0)
             {
                 return headerHeight + itemHeight;
             }
 
-            return headerHeight + ((this.MaxValue / this.ValueRange) * itemHeight);
+            return headerHeight + ((MaxValue / ValueRange) * itemHeight);
         }
 
         public override void DrawContent(SKCanvas canvas, int width, int height)
         {
-            var valueLabelSizes = this.MeasureValueLabels();
-            var footerHeight = this.CalculateFooterHeight(valueLabelSizes);
-            var headerHeight = this.CalculateHeaderHeight(valueLabelSizes);
-            var itemSize = this.CalculateItemSize(width, height, footerHeight, headerHeight);
-            var origin = this.CalculateYOrigin(itemSize.Height, headerHeight);
-            var points = this.CalculatePoints(itemSize, origin, headerHeight);
+            var valueLabelSizes = MeasureValueLabels();
+            var footerHeight = CalculateFooterHeight(valueLabelSizes);
+            var headerHeight = CalculateHeaderHeight(valueLabelSizes);
+            var itemSize = CalculateItemSize(width, height, footerHeight, headerHeight);
+            var origin = CalculateYOrigin(itemSize.Height, headerHeight);
+            var points = CalculatePoints(itemSize, origin, headerHeight);
 
-            this.DrawPointAreas(canvas, points, origin);
-            this.DrawPoints(canvas, points);
-            this.DrawFooter(canvas, points, itemSize, height, footerHeight);
-            this.DrawValueLabel(canvas, points, itemSize, height, valueLabelSizes);
+            DrawPointAreas(canvas, points, origin);
+            DrawPoints(canvas, points);
+            DrawFooter(canvas, points, itemSize, height, footerHeight);
+            DrawValueLabel(canvas, points, itemSize, height, valueLabelSizes);
         }
 
         protected SKSize CalculateItemSize(int width, int height, float footerHeight, float headerHeight)
         {
-            var total = this.Entries.Count();
-            var w = (width - ((total + 1) * this.Margin)) / total;
-            var h = height - this.Margin - footerHeight - headerHeight;
+            var total = Entries.Count();
+            var w = (width - ((total + 1) * Margin)) / total;
+            var h = height - Margin - footerHeight - headerHeight;
             return new SKSize(w, h);
         }
 
@@ -57,12 +57,12 @@ namespace Avalonia.Microcharts
         {
             var result = new List<SKPoint>();
 
-            for (int i = 0; i < this.Entries.Count(); i++)
+            for (int i = 0; i < Entries.Count(); i++)
             {
-                var entry = this.Entries.ElementAt(i);
+                var entry = Entries.ElementAt(i);
 
-                var x = this.Margin + (itemSize.Width / 2) + (i * (itemSize.Width + this.Margin));
-                var y = headerHeight + (((this.MaxValue - entry.Value) / this.ValueRange) * itemSize.Height);
+                var x = Margin + (itemSize.Width / 2) + (i * (itemSize.Width + Margin));
+                var y = headerHeight + (((MaxValue - entry.Value) / ValueRange) * itemSize.Height);
                 var point = new SKPoint(x, y);
                 result.Add(point);
             }
@@ -72,21 +72,21 @@ namespace Avalonia.Microcharts
 
         protected void DrawFooter(SKCanvas canvas, SKPoint[] points, SKSize itemSize, int height, float footerHeight)
         {
-            this.DrawLabels(canvas, points, itemSize, height, footerHeight);
+            DrawLabels(canvas, points, itemSize, height, footerHeight);
         }
 
         protected void DrawLabels(SKCanvas canvas, SKPoint[] points, SKSize itemSize, int height, float footerHeight)
         {
-            for (int i = 0; i < this.Entries.Count(); i++)
+            for (int i = 0; i < Entries.Count(); i++)
             {
-                var entry = this.Entries.ElementAt(i);
+                var entry = Entries.ElementAt(i);
                 var point = points[i];
 
                 if (!string.IsNullOrEmpty(entry.Label))
                 {
                     using (var paint = new SKPaint())
                     {
-                        paint.TextSize = this.LabelTextSize;
+                        paint.TextSize = LabelTextSize;
                         paint.IsAntialias = true;
                         paint.Color = entry.TextColor;
                         paint.IsStroke = false;
@@ -107,7 +107,7 @@ namespace Avalonia.Microcharts
                             paint.MeasureText(text, ref bounds);
                         }
 
-                        canvas.DrawText(text, point.X - (bounds.Width / 2), height - (this.Margin + (this.LabelTextSize / 2)), paint);
+                        canvas.DrawText(text, point.X - (bounds.Width / 2), height - (Margin + (LabelTextSize / 2)), paint);
                     }
                 }
             }
@@ -119,33 +119,33 @@ namespace Avalonia.Microcharts
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    var entry = this.Entries.ElementAt(i);
+                    var entry = Entries.ElementAt(i);
                     var point = points[i];
-                    canvas.DrawPoint(point, entry.Color, this.PointSize, this.PointMode);
+                    canvas.DrawPoint(point, entry.Color, PointSize, PointMode);
                 }
             }
         }
 
         protected void DrawPointAreas(SKCanvas canvas, SKPoint[] points, float origin)
         {
-            if (points.Length > 0 && this.PointAreaAlpha > 0)
+            if (points.Length > 0 && PointAreaAlpha > 0)
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    var entry = this.Entries.ElementAt(i);
+                    var entry = Entries.ElementAt(i);
                     var point = points[i];
                     var y = Math.Min(origin, point.Y);
 
-                    using (var shader = SKShader.CreateLinearGradient(new SKPoint(0, origin), new SKPoint(0, point.Y), new[] { entry.Color.WithAlpha(this.PointAreaAlpha), entry.Color.WithAlpha((byte)(this.PointAreaAlpha / 3)) }, null, SKShaderTileMode.Clamp))
+                    using (var shader = SKShader.CreateLinearGradient(new SKPoint(0, origin), new SKPoint(0, point.Y), new[] { entry.Color.WithAlpha(PointAreaAlpha), entry.Color.WithAlpha((byte)(PointAreaAlpha / 3)) }, null, SKShaderTileMode.Clamp))
                     using (var paint = new SKPaint
                     {
                         Style = SKPaintStyle.Fill,
-                        Color = entry.Color.WithAlpha(this.PointAreaAlpha),
+                        Color = entry.Color.WithAlpha(PointAreaAlpha),
                     })
                     {
                         paint.Shader = shader;
                         var height = Math.Max(2, Math.Abs(origin - point.Y));
-                        canvas.DrawRect(SKRect.Create(point.X - (this.PointSize / 2), y, this.PointSize, height), paint);
+                        canvas.DrawRect(SKRect.Create(point.X - (PointSize / 2), y, PointSize, height), paint);
                     }
                 }
             }
@@ -157,9 +157,9 @@ namespace Avalonia.Microcharts
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    var entry = this.Entries.ElementAt(i);
+                    var entry = Entries.ElementAt(i);
                     var point = points[i];
-                    var isAbove = point.Y > (this.Margin + (itemSize.Height / 2));
+                    var isAbove = point.Y > (Margin + (itemSize.Height / 2));
 
                     if (!string.IsNullOrEmpty(entry.ValueLabel))
                     {
@@ -167,7 +167,7 @@ namespace Avalonia.Microcharts
                         {
                             using (var paint = new SKPaint())
                             {
-                                paint.TextSize = this.LabelTextSize;
+                                paint.TextSize = LabelTextSize;
                                 paint.FakeBoldText = true;
                                 paint.IsAntialias = true;
                                 paint.Color = entry.Color;
@@ -178,7 +178,7 @@ namespace Avalonia.Microcharts
                                 paint.MeasureText(text, ref bounds);
 
                                 canvas.RotateDegrees(90);
-                                canvas.Translate(this.Margin, -point.X + (bounds.Height / 2));
+                                canvas.Translate(Margin, -point.X + (bounds.Height / 2));
 
                                 canvas.DrawText(text, 0, 0, paint);
                             }
@@ -190,11 +190,11 @@ namespace Avalonia.Microcharts
 
         protected float CalculateFooterHeight(SKRect[] valueLabelSizes)
         {
-            var result = this.Margin;
+            var result = Margin;
 
-            if (this.Entries.Any(e => !string.IsNullOrEmpty(e.Label)))
+            if (Entries.Any(e => !string.IsNullOrEmpty(e.Label)))
             {
-                result += this.LabelTextSize + this.Margin;
+                result += LabelTextSize + Margin;
             }
 
             return result;
@@ -202,14 +202,14 @@ namespace Avalonia.Microcharts
 
         protected float CalculateHeaderHeight(SKRect[] valueLabelSizes)
         {
-            var result = this.Margin;
+            var result = Margin;
 
-            if (this.Entries.Any())
+            if (Entries.Any())
             {
                 var maxValueWidth = valueLabelSizes.Max(x => x.Width);
                 if (maxValueWidth > 0)
                 {
-                    result += maxValueWidth + this.Margin;
+                    result += maxValueWidth + Margin;
                 }
             }
 
@@ -220,8 +220,8 @@ namespace Avalonia.Microcharts
         {
             using (var paint = new SKPaint())
             {
-                paint.TextSize = this.LabelTextSize;
-                return this.Entries.Select(e =>
+                paint.TextSize = LabelTextSize;
+                return Entries.Select(e =>
                 {
                     if (string.IsNullOrEmpty(e.ValueLabel))
                     {

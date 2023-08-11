@@ -2,10 +2,10 @@ using SkiaSharp;
 
 namespace Avalonia.Microcharts.Example
 {
-    public class MainWindowViewModel
+  public class MainWindowViewModel
+  {
+    public Entry[] Entries = new Entry[]
     {
-        public Entry[] Entries = new Entry[]
-        {
             new Entry()
             {
                 Value = 200,
@@ -27,21 +27,21 @@ namespace Avalonia.Microcharts.Example
                 ValueLabel = "-100",
                 Color = SKColor.Parse("#90D585")
             }
-        };
+    };
 
-        public Chart[] Charts { get; set; }
+    public Chart[] Charts { get; set; }
 
-        public MainWindowViewModel()
-        {
-            this.Charts = new Chart[]
-            {
-                new BarChart() {Entries = this.Entries},
-                new PointChart() {Entries = this.Entries},
-                new LineChart() {Entries = this.Entries},
-                new DonutChart() {Entries = this.Entries},
-                new RadialGaugeChart() {Entries = this.Entries},
-                new RadarChart() {Entries = this.Entries}
-            };
-        }
+    public MainWindowViewModel()
+    {
+      Charts = new Chart[]
+      {
+                new BarChart() {Entries = Entries},
+                new PointChart() {Entries = Entries},
+                new LineChart() {Entries = Entries},
+                new DonutChart() {Entries = Entries},
+                new RadialGaugeChart() {Entries = Entries},
+                new RadarChart() {Entries = Entries}
+      };
     }
+  }
 }
